@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import google.generativeai as genai
+#import google.generativeai as genai
 from dotenv import load_dotenv
 import requests
 from bs4 import BeautifulSoup
@@ -12,11 +12,16 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+from groq import Groq
+
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
 # Configure Gemini API key
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+#genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize the Gemini model
-model = genai.GenerativeModel("models/gemini-2.0-flash")
+#model = genai.GenerativeModel("models/gemini-2.0-flash")
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
@@ -49,8 +54,15 @@ Here is the policy:
 """
 
     try:
-        response = model.generate_content(prompt)
-        return jsonify({"summary": response.text})
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+
+        return jsonify({"summary": completion.choices[0].message.content})
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
