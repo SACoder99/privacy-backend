@@ -16,7 +16,7 @@ CORS(app)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize the Gemini model
-model = genai.GenerativeModel(model_name="models/gemini-2.5-pro")
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
@@ -58,6 +58,10 @@ Here is the policy:
 @app.route("/ping", methods=["GET"])
 def ping():
     return jsonify({"message": "Server is running."})
+
+@app.route("/")
+def home():
+    return jsonify({"status": "Privacy API running"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
