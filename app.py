@@ -16,7 +16,7 @@ CORS(app)
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Initialize the Gemini model
-model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+model = genai.GenerativeModel("models/gemini-2.0-flash")
 
 @app.route("/summarize", methods=["POST"])
 def summarize():
